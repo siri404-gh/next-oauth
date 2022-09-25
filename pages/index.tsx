@@ -11,7 +11,7 @@ const Home: NextPage = ({ data }: { data: string }) => {
 
 export const fetchGitData = async (code = "") => {
   const data = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN}/api/stack/data?code=${code}`
+    `${process.env.NEXT_PUBLIC_DOMAIN}/api/git/data?code=${code}`
   );
   return await data.json();
 };
