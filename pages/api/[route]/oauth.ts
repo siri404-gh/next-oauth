@@ -1,17 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-let accessToken = "";
+const accessTokenStore = {};
 
-export default async function git(req, res, factory) {
+interface OauthFactory {
+  fetchData: (accessToken: string) => Promise<string>;
+  fetchAccessToken: (accessToken: string) => Promise<string>;
+  apiUrl: string;
+  redirectUrl: string;
+}
+
+export default async function (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  factory: OauthFactory
+) {
   console.log("[OAUTH] getting data");
 
-  if (accessToken) {
-    console.log("[OAUTH] access token present", accessToken);
+  if (accessTokenStore[factory.apiUrl]) {
+    console.log(
+      "[OAUTH] access token present",
+      accessTokenStore[factory.apiUrl]
+    );
     try {
       console.log("[OAUTH] fetching data from third party");
       return res.json({
         props: {
-          data: await factory.fetchData(accessToken),
+          data: await factory.fetchData(accessTokenStore[factory.apiUrl]),
         },
       });
     } catch (err) {
@@ -19,24 +33,33 @@ export default async function git(req, res, factory) {
       return await check(req, res, factory);
     }
   } else {
-    console.log("[OAUTH] no access token present", accessToken);
+    console.log(
+      "[OAUTH] no access token present",
+      accessTokenStore[factory.apiUrl]
+    );
     return await check(req, res, factory);
   }
 }
 
-async function check(req: NextApiRequest, res: NextApiResponse, factory) {
+async function check(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  factory: OauthFactory
+) {
   const { code } = req.query;
 
   if (code) {
     console.log("[OAUTH] code present", code);
     try {
       console.log("[OAUTH] fetching token with code", code);
-      accessToken = await factory.fetchAccessToken(code.toString());
-      console.log("[OAUTH] got accesstoken", accessToken);
-      if (!accessToken) {
+      const _accessToken = await factory.fetchAccessToken(code.toString());
+      console.log("[OAUTH] got accesstoken", _accessToken);
+
+      if (!_accessToken) {
         console.log("[OAUTH] invalid access token");
         return res.end();
       }
+      accessTokenStore[factory.apiUrl] = _accessToken;
       console.log("[OAUTH] redirecting to api call");
       return res.redirect(factory.apiUrl);
     } catch (err) {
@@ -52,7 +75,7 @@ async function check(req: NextApiRequest, res: NextApiResponse, factory) {
 function redirectToThirdParty(
   _req: NextApiRequest,
   res: NextApiResponse,
-  factory
+  factory: OauthFactory
 ) {
   return res.json({
     redirect: {
@@ -60,4 +83,15 @@ function redirectToThirdParty(
       permanent: false,
     },
   });
+}
+
+export function callback(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  url: string
+) {
+  const {
+    query: { code },
+  } = req;
+  return res.redirect(`${url}?code=${code}`);
 }
