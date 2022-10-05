@@ -21,14 +21,13 @@ function factory() {
   const client_id = process.env.STACK_APP_CLIENT_ID;
   const client_secret = process.env.STACK_APP_CLIENT_SECRET;
   const redirect_uri = `${process.env.NEXT_PUBLIC_DOMAIN}/api/stack/callback`;
-  const stackId = process.env.STACK_APP_ID;
   const key = process.env.STACK_APP_KEY;
   const scope = "private_info,no_expiry";
   const state = "/";
   const redirectUrl = `https://stackoverflow.com/oauth?client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&state=${state}`;
   const apiUrl = "/api/stack/data";
   const getDataUrl = (accessToken: string) =>
-    `https://api.stackexchange.com/2.3/users/${stackId}?site=stackoverflow&access_token=${accessToken}&key=${key}`;
+    `https://api.stackexchange.com/2.3/me?site=stackoverflow&access_token=${accessToken}&key=${key}`;
 
   return {
     fetchData: async (accessToken: string) => {

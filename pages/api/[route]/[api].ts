@@ -13,8 +13,8 @@ export default async function handler(
 
   switch (route) {
     case "git":
-      return await git("/")(req, res);
+      return await git("/git")(req, res);
     case "stack":
-      return await stack("/")(req, res);
+      return await stack("/stack")(req, res);
   }
 }
