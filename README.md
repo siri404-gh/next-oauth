@@ -1,14 +1,13 @@
-# Next.js
+# Next oAuth
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a Demo project to implement an oAuth library in NextJS. 
 
-[Configuration](https://codesandbox.io/docs/projects/learn/setting-up/tasks) has been added to optimize it for [CodeSandbox Projects](https://codesandbox.io/p/dashboard).
+The library itself is in `pages/api/[route]/[api]/oath.ts`. Ideally, this would come as an npm package.
 
-[![Edit in CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/github/codesandbox/codesandbox-template-next.js)
+Data is requested from an api which redirects the user to Github and takes the code query param to exchange it with an access token. Data is then requested and returned to the client.
 
-## Resources
+Note: This wont work without the appropriate environment variables.
 
-- [CodeSandbox Projects — Docs](https://codesandbox.io/docs/projects)
-- [CodeSandbox — Discord](https://discord.gg/Ggarp3pX5H)
-- [Next.js — GitHub](https://github.com/vercel/next.js/)
-- [Next.js — Docs](https://nextjs.org/docs)
+DEMO: https://t6emtg-3000.preview.csb.app/
+
+![Image](./oauth.png "demo oauth library")
