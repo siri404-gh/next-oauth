@@ -9,7 +9,7 @@ const Home: NextPage = ({ data }: { data: string }) => {
   );
 };
 
-export const fetchGitData = async (slug = "git", code = "") => {
+export const fetchGitData = async (slug = "stack", code = "") => {
   const data = await fetch(
     `${process.env.NEXT_PUBLIC_DOMAIN}/api/${slug}/data?code=${code}`
   );
